@@ -79,14 +79,16 @@ async function deleteContact(id) {
     return false; //no contacts, deletion failed
   }
 
-  const contactForDeletion = contacts.find((contact) => contact.id === id);
+  const idString = id.toString();
+
+  const contactForDeletion = contacts.find((contact) => contact.id === idString);
 
   if (!contactForDeletion) {
     return false; //no contact found to delete
   }
 
   const contactsAfterDeletion = contacts.filter((contact) => {
-    return contact.id !== id; //keep all contacts with IDs != delID
+    return contact.id !== idString; //keep all contacts with IDs != delID
   });
 
   nodeFileSys.writeFile(contactsPath, JSON.stringify(contactsAfterDeletion, null, 2), "utf-8");
