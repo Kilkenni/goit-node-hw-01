@@ -1,37 +1,135 @@
 const contactAPI = require("./contacts.js");
 
-console.log("CLI says");
-/*contactAPI.getContacts().then((contacts) => {
-  console.log(`Type of contacts is ${typeof contacts}`)
-  //console.log(contacts[0]);
-  //console.log(contacts.find( (contact)));
-}
-)
+const argv = require("yargs")
+  .help()
+  .argv;
+
+
+function getContacts(_) {
+  contactAPI.getContacts().then((contacts) => {
+    console.table(contacts);
+  })
   .catch((error) => {
     console.error(error);
+  });
+}
+
+function getContactByID({ id }) {
+  if (!id) {
+    console.warn("Please provide a contact <id>");
+    return false;
   }
-);*/
-  
-/*contactAPI.getContactByID("2").then((foundContact) => {
-  console.log(`Contact #1 is ${foundContact ? foundContact : "not found"}`);
-  console.log(foundContact);
-})
-.catch((error) => {
+
+  contactAPI.getContactByID(id).then((contact) => {
+    if (contact === false) {
+      console.log(`Can't find the contact with id <${id}>`);
+      return false;
+    }
+    else if (contact) { //can be undefined as well
+      console.table(contact);
+    }
+  })
+  .catch((error) => {
     console.error(error);
-  }
-);*/
+  });
+}
 
-// contactAPI.addContact({ name: "Alex Murphy", email: "robo@cop.us", phone: "(911) 010-1010" }).then();
-
-/*contactAPI.deleteContact("2546070e-c32b-491b-b9c8-1385251fb6a0").then((result) => {
-  if (result) {
-    console.log("Robocop left");
-    //console.log(result);
+function addContact({ name, email, phone }) {
+  if (!name && !email && !phone) {
+    console.warn("You did not provide any info for the contact. A contact needs a <name>, an <email> and a <phone>.")
+    return false;
   }
-  else {
-    console.log("Can't find our Robocop!");
-  }
-  
-});*/
 
-contactAPI.updateContact("e4394e96-e66b-4ef0-b340-457fcc8e68ff", { email: "robocop@detroitpolice.com" });
+  contactAPI.addContact({name, email, phone}).then((contacts) => {
+    if (contacts) {
+      console.log("Contact added.")
+    }
+  })
+  .catch((error) => {
+    console.error(error);
+  });
+}
+
+function deleteContact({ id }) {
+  if (!id) {
+    console.warn("Please provide a contact <id>");
+    return false;
+  }
+
+  contactAPI.deleteContact(id).then((deletedContact) => {
+    if (deletedContact) {
+      console.log("Contact deleted successfully:");
+      console.table(deletedContact);
+    }
+    else if (deletedContact === false) {
+      console.log(`Can't find the contact with id <${id}> to delete it.`);
+    }
+  })
+    .catch((error) => {
+      console.error(error);
+    });
+}
+
+function updateContact({ id, name, email, phone }) {
+  if (!id) {
+    console.warn("Please provide a contact <id>");
+    return false;
+  }
+
+  if (!name && !email && !phone) {
+    console.warn("You did not provide any new info to update the contact with.")
+    return false;
+  }
+  const updateSlice = {};
+  if (name) {
+    updateSlice.name = name;
+  }
+  if (email) {
+    updateSlice.email = email;
+  }
+  if (phone) {
+    updateSlice.phone = phone;
+  }
+
+  contactAPI.updateContact(id, updateSlice).then((updatedContact) => {
+    if (updatedContact === false) {
+      console.log(`Can't find the contact with id <${id}> to update it.`);
+    }
+    else if (updatedContact) {
+      console.log("Contact updated successfully:");
+      console.table(updatedContact);
+    }
+  })
+    .catch((error) => {
+      console.error(error);
+    });
+}
+
+
+function invokeAction({ action, id, name, email, phone }) {
+  switch (action) {
+    case "list":
+      getContacts();
+      break;
+    case "get":
+      getContactByID({ id });
+      break;
+
+    case "add":
+      addContact({name, email, phone})
+      break;
+
+    case "remove":
+      deleteContact({ id });
+      break;
+    
+    case "update":
+      updateContact({ id, name, email, phone });
+      break;
+
+    default:
+      console.warn("\x1B[31m Unknown action type!");
+  }
+}
+
+invokeAction(argv);

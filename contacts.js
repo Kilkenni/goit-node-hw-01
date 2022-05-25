@@ -29,11 +29,19 @@ async function getContactByID(id = "0") {
   if (!contacts || !contacts.length || contacts.length === 0) {
     return false; //no contacts, search fails
   }
+
+  const idString = id.toString();
   
   const foundContact = contacts.find((contact) => {
-    return contact.id === id;
+    return contact.id === idString;
   });
-  return foundContact; //gotcha
+
+  if (foundContact) {
+    return foundContact; //gotcha
+  }
+  else {
+    return false;
+  } 
 }
 
 async function addContact(newContact) {
