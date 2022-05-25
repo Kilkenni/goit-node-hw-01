@@ -109,7 +109,9 @@ async function updateContact(id, updatedContact) {
     return false; //no contacts, nothing to edit
   }
 
-  const updateIndex = contacts.findIndex((contact) => contact.id === id);
+  const idString = id.toString();
+
+  const updateIndex = contacts.findIndex((contact) => contact.id === idString);
 
   if (updateIndex < 0) {
     return false; //contact not found
