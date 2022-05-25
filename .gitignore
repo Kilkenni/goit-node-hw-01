@@ -1,0 +1,7 @@
+#Junk
+.DS_Store
+.vscode/
+.idea/
+
+# dependencies
+/node_modules

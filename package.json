@@ -1,0 +1,27 @@
+{
+  "name": "goit-node-hw-01",
+  "version": "1.0.0",
+  "description": "Basic Node.js practice ancd CLI",
+  "main": "index.js",
+  "scripts": {
+    "test": "test",
+    "start": "node index.js",
+    "start:dev": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kilkenni/goit-node-hw-01.git"
+  },
+  "author": "Kilkenni",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Kilkenni/goit-node-hw-01/issues"
+  },
+  "homepage": "https://github.com/Kilkenni/goit-node-hw-01#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.16"
+  },
+  "dependencies": {
+    "uuid": "^8.3.2"
+  }
+}
